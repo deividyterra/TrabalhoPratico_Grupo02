@@ -54,7 +54,7 @@ public class Analisador
             }
         }
 
-        // Agora verifica se esta palavra eh conhecida. Se for, cria um
+        // Agora verifica se esta palavra eh conhecida. Se for, cria um comando
         // com ela. Se nao, cria um comando "null" (para comando desconhecido)
         if(palavrasDeComando.ehComando(palavra1)) {
             return new Comando(palavra1, palavra2);
@@ -62,5 +62,13 @@ public class Analisador
         else {
             return new Comando(null, palavra2); 
         }
+    }
+
+    /**
+     * @return Os comandos validos disponiveis em PalavrasComando, usado
+     * entre Jogo e PalavrasComando para nao aumentar o acoplamento
+     */
+    public String getComandosValidos(){
+        return palavrasDeComando.getComandosValidos();
     }
 }

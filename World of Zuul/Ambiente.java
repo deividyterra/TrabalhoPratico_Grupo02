@@ -13,26 +13,22 @@
  * @author  Michael Kölling and David J. Barnes (traduzido por Julio Cesar Alves)
  * @version 2011.07.31 (2016.02.01)
  */
-import java.util.HashMap;
-
 public class Ambiente 
 {
-    public String descricao;
-    private HashMap<String, Ambiente> saidas;
+    private String descricao;
+    private Ambiente saidaNorte;
+    private Ambiente saidaSul;
+    private Ambiente saidaLeste;
+    private Ambiente saidaOeste;
 
     /**
      * Cria um ambiente com a "descricao" passada. Inicialmente, ele
-     * nao tem saidas. "descricao" eh algo como "uma cozinha" ou
-     * "
-     * Create a room described "description". Initially, it has
-     * no exits. "description" is something like "a kitchen" or
-     * "um jardim aberto".
+     * nao tem saidas. "descricao" eh algo como "uma cozinha" ou jardim"
      * @param descricao A descricao do ambiente.
      */
     public Ambiente(String descricao) 
     {
         this.descricao = descricao;
-        saidas = new HashMap<String, Ambiente>();
     }
 
     /**
@@ -43,13 +39,16 @@ public class Ambiente
      * @param sul A saida sul.
      * @param oeste A saida oeste.
      */
-    public void ajustarSaida(String direcao, Ambiente ambiente){
-    if(ambiente != null)
-        saidas.put(direcao, ambiente);
-    }
-
-    public Ambiente getSaida(String direcao){
-    return saidas.get(direcao);
+    public void ajustarSaidas(Ambiente norte, Ambiente leste, Ambiente sul, Ambiente oeste) 
+    {
+        if(norte != null)
+            saidaNorte = norte;
+        if(leste != null)
+            saidaLeste = leste;
+        if(sul != null)
+            saidaSul = sul;
+        if(oeste != null)
+            saidaOeste = oeste;
     }
 
     /**
@@ -60,16 +59,33 @@ public class Ambiente
         return descricao;
     }
 
-    public String getSaidas()
-{
-    String saidasDisponiveis = "";
-
-    for(String direcao : saidas.keySet()){
-        saidasDisponiveis += direcao + " ";
+    /**
+     * @return Retorna as saídas do Ambiente.
+    */
+    public Ambiente getSaidaNorte(){
+        return saidaNorte;
+    }
+    public Ambiente getSaidaSul(){
+        return saidaSul;
+    }
+    public Ambiente getSaidaLeste(){
+        return saidaLeste;
+    }
+    public Ambiente getSaidaOeste(){
+        return saidaOeste;
     }
 
-    return saidasDisponiveis;
-}
-
-
+    /**
+     * Funcao que retorna o ambiente que fica na direcao informada
+     * @param direcao A direcao que deseja ir
+     * @return O ambiente vizinho dessa direcao ou null caso nao
+     * haja saida
+     */
+    public Ambiente getSaida(String direcao){
+        if(direcao.equals("norte")) return getSaidaNorte();
+        if(direcao.equals("leste")) return getSaidaLeste();
+        if(direcao.equals("sul")) return getSaidaSul();
+        if(direcao.equals("oeste")) return getSaidaOeste();
+        return null;
+    }
 }

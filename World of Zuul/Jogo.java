@@ -30,13 +30,11 @@ public class Jogo
     }
 
     /**
-     * Cri
-     * 
-     * 89todos os ambientes e liga as saidas deles
+     * Cria todos os ambientes e liga as saidas deles
      */
     private void criarAmbientes()
     {
-        Ambiente fora, anfiteatro, cantina, laboratorio, escritorio, sotao;
+        Ambiente fora, anfiteatro, cantina, laboratorio, escritorio;
       
         // cria os ambientes
         fora = new Ambiente("do lado de fora da entrada principal de uma universidade");
@@ -44,22 +42,13 @@ public class Jogo
         cantina = new Ambiente("na cantina do campus");
         laboratorio = new Ambiente("no laboratorio de computacao");
         escritorio = new Ambiente("na sala de administracao dos computadores");
-        sotao = new Ambiente("no sotao");
-
+        
         // inicializa as saidas dos ambientes
-        fora.ajustarSaida("leste", anfiteatro);
-        fora.ajustarSaida("sul", laboratorio);
-        fora.ajustarSaida("oeste", cantina);
-
-        anfiteatro.ajustarSaida("oeste", fora);
-        anfiteatro.ajustarSaida("cima", sotao);
-
-        cantina.ajustarSaida("leste", fora);
-
-        laboratorio.ajustarSaida("norte", fora);
-        laboratorio.ajustarSaida("leste", escritorio);
-
-        escritorio.ajustarSaida("oeste", laboratorio);
+        fora.ajustarSaidas(null, anfiteatro, laboratorio, cantina);
+        anfiteatro.ajustarSaidas(null, null, null, fora);
+        cantina.ajustarSaidas(null, fora, null, null);
+        laboratorio.ajustarSaidas(fora, escritorio, null, null);
+        escritorio.ajustarSaidas(null, null, null, laboratorio);
 
         ambienteAtual = fora;  // o jogo comeca do lado de fora
     }
@@ -93,7 +82,7 @@ public class Jogo
         System.out.println("Digite 'ajuda' se voce precisar de ajuda.");
         System.out.println();
         
-        exibeAmbientes();
+        exibirLocalizacaoAtual();
     }
 
     /**
@@ -120,9 +109,6 @@ public class Jogo
         else if (palavraDeComando.equals("sair")) {
             querSair = sair(comando);
         }
-        else if (palavraDeComando.equals("observar")) {
-            observar();
-        }
 
         return querSair;
     }
@@ -140,7 +126,7 @@ public class Jogo
         System.out.println("pela universidade.");
         System.out.println();
         System.out.println("Suas palavras de comando sao:");
-        System.out.println("   ir sair ajuda");
+        System.out.println(analisador.getComandosValidos());
     }
 
     /** 
@@ -158,13 +144,14 @@ public class Jogo
         String direcao = comando.getSegundaPalavra();
 
         // Tenta sair do ambiente atual
-       Ambiente proximoAmbiente = ambienteAtual.getSaida(direcao);
-       if (proximoAmbiente == null) {
+        Ambiente proximoAmbiente = ambienteAtual.getSaida(direcao);
+
+        if (proximoAmbiente == null) {
             System.out.println("Nao ha passagem!");
         }
         else {
             ambienteAtual = proximoAmbiente;
-            exibeAmbientes();
+            exibirLocalizacaoAtual();
         }
     }
 
@@ -183,15 +170,27 @@ public class Jogo
             return true;  // sinaliza que nos queremos sair
         }
     }
-    private void exibeAmbientes(){
-        System.out.println("Voce esta " + ambienteAtual.getDescricao());
-        System.out.println("Saidas: " + ambienteAtual.getSaidas());
-    }
 
-    private void observar()
-    {
+    /** 
+     * Utilizado para exibir onde o jogador está, e quais as saidas
+     * possiveis ele tem, exibindo na tela a localizacao e as saidas
+     */
+    private void exibirLocalizacaoAtual(){
         System.out.println("Voce esta " + ambienteAtual.getDescricao());
-        System.out.println("Saidas: " + ambienteAtual.getSaidas());
+    
+        System.out.print("Saidas: ");
+        if(ambienteAtual.getSaidaNorte()!= null) {
+            System.out.print("norte ");
+        }
+        if(ambienteAtual.getSaidaLeste() != null) {
+            System.out.print("leste ");
+        }
+        if(ambienteAtual.getSaidaSul() != null) {
+            System.out.print("sul ");
+        }
+        if(ambienteAtual.getSaidaOeste() != null) {
+            System.out.print("oeste ");
+        }
+        System.out.println();
     }
-
 }
