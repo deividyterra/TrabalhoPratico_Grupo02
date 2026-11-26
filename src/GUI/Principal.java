@@ -1,10 +1,18 @@
 import java.util.HashMap;
 /**
+ * Contém o ponto de entrada do programa e executa as simulações entre os
+ * ambientes definidos pelas posições de referência.
  *
  * @author Luiz Merschmann
  */
 public class Principal {
 
+    /**
+     * Cria as posições de referência dos ambientes e executa uma simulação
+     * para cada par de origem e destino diferentes.
+     *
+     * @param args argumentos recebidos na inicialização do programa
+     */
     public static void main(String[] args) {
         HashMap<String, Posicao> referencias = new HashMap<>();
         referencias.put("Quarto 1", new Posicao(4, 2));

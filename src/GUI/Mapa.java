@@ -1,17 +1,25 @@
 import java.util.List;
 
 /**
- * Representa um mapa com todos os itens que participam da simulacao
+ * Representa o cenário da simulação e armazena jogadores, paredes e letras
+ * em matrizes separadas.
  * @author David J. Barnes and Michael Kolling and Luiz Merschmann
  */
 public class Mapa {
+    /** Matriz que registra a posição dos jogadores no mapa. */
     private Jogador[][] jogador;
+    /** Matriz que registra as paredes que bloqueiam a passagem. */
     private Parede[][] parede;
+    /** Matriz que registra as letras que identificam os ambientes. */
     private Letra[][] letreiro;
+    /** Quantidade de posições na horizontal do mapa. */
     private int largura;
+    /** Quantidade de posições na vertical do mapa. */
     private int altura;
     
+    /** Largura utilizada quando o mapa é criado sem dimensões informadas. */
     private static final int LARGURA_PADRAO = 20;
+    /** Altura utilizada quando o mapa é criado sem dimensões informadas. */
     private static final int ALTURA_PADRAO = 17;
     
     /**
@@ -29,6 +37,10 @@ public class Mapa {
         adicionarLetreiro();
     }
 
+    /**
+     * Cria e posiciona as letras que identificam os cômodos e o corredor.
+     * As coordenadas e os caracteres definem o letreiro apresentado no mapa.
+     */
     private void adicionarLetreiro() {
         // Adiciona letras do letreiro
         Posicao[] posicoes = {
@@ -72,6 +84,10 @@ public class Mapa {
         }
     }
 
+    /**
+     * Cria e posiciona todas as paredes que formam os limites e divisões
+     * do cenário.
+     */
     private void adicionarParede() {
         // Adiciona paredes
         Posicao[] posicoes2 = {
@@ -138,55 +154,136 @@ public class Mapa {
     /**
      * Cria mapa com tamanho padrao.
      */
+    /**
+     * Cria um mapa utilizando a largura e a altura padrão.
+     */
     public Mapa(){
         this(LARGURA_PADRAO,ALTURA_PADRAO);
     }
     
+    /**
+     * Registra o jogador na matriz correspondente à sua posição atual.
+     *
+     * @param j jogador que será adicionado ao mapa
+     */
     public void adicionarItem(Jogador j){
         jogador[j.getPosicaoOrigem().getX()][j.getPosicaoOrigem().getY()] = j;
     }
     
+    /**
+     * Remove o jogador da posição que ele ocupa atualmente na matriz.
+     *
+     * @param j jogador que será removido do mapa
+     */
     public void removerItem(Jogador j){
         jogador[j.getPosicaoOrigem().getX()][j.getPosicaoOrigem().getY()] = null;
     }
     
+    /**
+     * Atualiza o registro do jogador no mapa, removendo sua posição anterior
+     * e adicionando-o novamente na posição atual.
+     *
+     * @param j jogador cuja posição será atualizada
+     */
     public void atualizarMapa(Jogador j){
         removerItem(j);
         adicionarItem(j);
     }
     
+    /**
+     * Retorna o jogador registrado em uma coordenada.
+     *
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @return jogador na posição indicada ou {@code null} se não houver jogador
+     */
     public Jogador getJogador(int x, int y){
         return jogador[x][y];
     }
 
+    /**
+     * Retorna a parede registrada em uma coordenada.
+     *
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @return parede na posição indicada ou {@code null} se não houver parede
+     */
     public Parede getParede(int x, int y){
         return parede[x][y];
     }
 
+    /**
+     * Retorna a letra registrada em uma coordenada.
+     *
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @return letra na posição indicada ou {@code null} se não houver letra
+     */
     public Letra getLetra(int x, int y){
         return letreiro[x][y];
     }
 
+    /**
+     * Retorna a largura do mapa.
+     *
+     * @return número de posições na horizontal
+     */
     public int getLargura() {
         return largura;
     }
 
+    /**
+     * Retorna a altura do mapa.
+     *
+     * @return número de posições na vertical
+     */
     public int getAltura() {
         return altura;
     }
 
+    /**
+     * Verifica se uma coordenada está dentro do mapa e não contém uma parede.
+     *
+     * @param x coordenada horizontal a verificar
+     * @param y coordenada vertical a verificar
+     * @return {@code true} se for possível passar pela posição; caso contrário,
+     *         {@code false}
+     */
     public boolean podePassar(int x, int y) {
         return estaDentro(x, y) && !temParede(x, y);
     }
 
+    /**
+     * Verifica se existe uma parede na coordenada informada.
+     * Este método pressupõe que a coordenada já foi validada.
+     *
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @return {@code true} se houver uma parede na posição
+     */
     private boolean temParede(int x, int y) {
         return parede[x][y] != null;
     }
+    /**
+     * Verifica se uma coordenada pertence aos limites do mapa.
+     *
+     * @param x coordenada horizontal
+     * @param y coordenada vertical
+     * @return {@code true} se a coordenada estiver dentro do mapa
+     */
     public boolean estaDentro(int x, int y) {
         return x >= 0 && x < largura
             && y >= 0 && y < altura;
     }
 
+    /**
+     * Solicita ao algoritmo A* um caminho entre duas posições do mapa.
+     *
+     * @param origem posição inicial do caminho
+     * @param destino posição final desejada
+     * @return lista de posições que formam o caminho, ou uma lista vazia caso
+     *         não seja encontrado um caminho
+     */
     public List<Posicao> encontrarCaminho(
             Posicao origem,
             Posicao destino) {
